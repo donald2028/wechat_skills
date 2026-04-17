@@ -360,7 +360,7 @@ pip install onnxruntime
 
 **静态模式 (static) - 24张表情（以9宫格为例，需3个宫格）：**
 ```
-output/20260321_120000_gemini/
+~/wechat-sticker-output/20260321_120000_gemini/
 ├── params.json
 ├── static_01/                     ← 第1个宫格（9张或16张静态表情）
 │   ├── original_grid.png
@@ -377,7 +377,7 @@ output/20260321_120000_gemini/
 
 **动态模式 (animated) - 24个GIF（需24个宫格）：**
 ```
-output/20260321_120000_gemini/
+~/wechat-sticker-output/20260321_120000_gemini/
 ├── params.json
 ├── anim_01/                       ← 第1个GIF（9帧或16帧动画）
 │   ├── original_grid.png

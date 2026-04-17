@@ -4,16 +4,34 @@ import glob as glob_module
 from datetime import datetime
 
 from modules.config import config_command
-from modules.prompts import build_prompts_workspace, build_transform_photo_prompt, build_character_reference_prompt
-from modules.api import transform_photo_to_chibi, draw_character_reference, remote_draw_trigger
+from modules.prompts import (
+    build_prompts_workspace,
+    build_transform_photo_prompt,
+    build_character_reference_prompt,
+)
+from modules.api import (
+    transform_photo_to_chibi,
+    draw_character_reference,
+    remote_draw_trigger,
+)
 from modules.postprocess import process_workspace
 from modules.meta import generate_meta, process_all_meta
 
 SKILL_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_DIR = os.path.join(SKILL_DIR, "output")
+
+
+def normalize_path(path_str):
+    """跨平台路径规范化"""
+    path_str = os.path.expanduser(path_str)
+    path_str = os.path.normpath(path_str)
+    return os.path.abspath(path_str)
+
+
+OUTPUT_DIR = normalize_path("~/wechat-sticker-output")
+
 
 def create_dir(provider=None):
-    """在 skill 目录下的 output/ 中创建时间戳工作空间"""
+    """在 ~/wechat-sticker-output/ 中创建时间戳工作空间"""
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     timestamp_dir = datetime.now().strftime("%Y%m%d_%H%M%S")
     if provider:
@@ -23,6 +41,7 @@ def create_dir(provider=None):
     out_dir_abs = os.path.abspath(full_path)
     print(out_dir_abs)
     return out_dir_abs
+
 
 def batch_draw(target_dir, provider=None, max_concurrent=3, delay_between=1.0):
     """批量生成所有 anim_* 或 static_* 目录下的图片（并发执行）"""
@@ -34,23 +53,29 @@ def batch_draw(target_dir, provider=None, max_concurrent=3, delay_between=1.0):
     params_path = os.path.join(target_dir, "params.json")
     reference_image = None
     if os.path.exists(params_path):
-        with open(params_path, 'r', encoding='utf-8') as f:
+        with open(params_path, "r", encoding="utf-8") as f:
             params = json.load(f)
             ref = params.get("reference_image", "")
             if ref and os.path.isfile(ref):
                 reference_image = ref
 
     # 查找所有 anim_* 或 static_* 子目录
-    subdirs = sorted([
-        d for d in os.listdir(target_dir)
-        if os.path.isdir(os.path.join(target_dir, d)) and (d.startswith("anim_") or d.startswith("static_"))
-    ])
+    subdirs = sorted(
+        [
+            d
+            for d in os.listdir(target_dir)
+            if os.path.isdir(os.path.join(target_dir, d))
+            and (d.startswith("anim_") or d.startswith("static_"))
+        ]
+    )
 
     if not subdirs:
         print(f"No anim_* or static_* directories found in {target_dir}")
         return False
 
-    print(f"Found {len(subdirs)} directories to process (max_concurrent={max_concurrent})")
+    print(
+        f"Found {len(subdirs)} directories to process (max_concurrent={max_concurrent})"
+    )
 
     def process_single(subdir):
         """处理单个子目录"""
@@ -65,7 +90,9 @@ def batch_draw(target_dir, provider=None, max_concurrent=3, delay_between=1.0):
             return (subdir, True, "already exists, skipped")
 
         if reference_image:
-            result = remote_draw_trigger(prompt_path, output_path, reference_image, provider=provider)
+            result = remote_draw_trigger(
+                prompt_path, output_path, reference_image, provider=provider
+            )
         else:
             result = remote_draw_trigger(prompt_path, output_path, provider=provider)
 
@@ -98,6 +125,7 @@ def batch_draw(target_dir, provider=None, max_concurrent=3, delay_between=1.0):
     print(f"\n[✓] Batch draw complete: {success_count}/{len(subdirs)} succeeded")
     return success_count == len(subdirs)
 
+
 def _parse_provider_arg(args):
     """从参数列表中解析 --provider 参数"""
     provider = None
@@ -112,6 +140,7 @@ def _parse_provider_arg(args):
             i += 1
     return provider, remaining
 
+
 if __name__ == "__main__":
     # 先解析 --provider 参数
     provider_arg, remaining_argv = _parse_provider_arg(sys.argv[1:])
@@ -119,12 +148,22 @@ if __name__ == "__main__":
     if not remaining_argv:
         print("Usage:")
         print("  python3 sticker_utils.py create_dir")
-        print("  python3 sticker_utils.py transform_photo <photo_path> <style_preset> <output_path> [additional_description]")
-        print("  python3 sticker_utils.py draw_character <character_prompt> <style_preset> <output_path>")
+        print(
+            "  python3 sticker_utils.py transform_photo <photo_path> <style_preset> <output_path> [additional_description]"
+        )
+        print(
+            "  python3 sticker_utils.py draw_character <character_prompt> <style_preset> <output_path>"
+        )
         print("  python3 sticker_utils.py build_prompts <target_directory_path>")
-        print("  python3 sticker_utils.py batch_draw <target_directory_path> [--concurrent N] [--delay S]")
-        print("  python3 sticker_utils.py draw <prompt.txt> <output_original_grid.png> [reference_image]")
-        print("  python3 sticker_utils.py draw_with_ref <prompt.txt> <output.png> <reference_image>")
+        print(
+            "  python3 sticker_utils.py batch_draw <target_directory_path> [--concurrent N] [--delay S]"
+        )
+        print(
+            "  python3 sticker_utils.py draw <prompt.txt> <output_original_grid.png> [reference_image]"
+        )
+        print(
+            "  python3 sticker_utils.py draw_with_ref <prompt.txt> <output.png> <reference_image>"
+        )
         print("  python3 sticker_utils.py process <target_directory_path>")
         print("  python3 sticker_utils.py wechat_meta <target_directory_path|all>")
         print("")
@@ -138,7 +177,9 @@ if __name__ == "__main__":
         print("配置管理:")
         print("  python3 sticker_utils.py config                    # 显示当前配置")
         print("  python3 sticker_utils.py config set <provider>     # 设置 API Key")
-        print("  python3 sticker_utils.py config default <provider> # 设置默认 provider")
+        print(
+            "  python3 sticker_utils.py config default <provider> # 设置默认 provider"
+        )
         sys.exit(1)
 
     cmd = remaining_argv[0]
@@ -149,25 +190,33 @@ if __name__ == "__main__":
         create_dir(provider=provider_arg)
     elif cmd == "transform_photo":
         if len(remaining_argv) < 4:
-            print("Usage: python3 sticker_utils.py transform_photo <photo_path> <style_preset> <output_path> [additional_description] [--provider gemini|qwen]")
+            print(
+                "Usage: python3 sticker_utils.py transform_photo <photo_path> <style_preset> <output_path> [additional_description] [--provider gemini|qwen]"
+            )
             sys.exit(1)
-        photo_path = remaining_argv[1]
+        photo_path = normalize_path(remaining_argv[1])
         style_preset = remaining_argv[2]
-        output_path = remaining_argv[3]
+        output_path = normalize_path(remaining_argv[3])
         additional_desc = remaining_argv[4] if len(remaining_argv) > 4 else ""
         prompt = build_transform_photo_prompt(style_preset, additional_desc)
         transform_photo_to_chibi(photo_path, prompt, output_path, provider=provider_arg)
     elif cmd == "draw_character":
         if len(remaining_argv) < 4:
-            print("Usage: python3 sticker_utils.py draw_character <character_prompt> <style_preset> <output_path> [--provider gemini|qwen]")
+            print(
+                "Usage: python3 sticker_utils.py draw_character <character_prompt> <style_preset> <output_path> [--provider gemini|qwen]"
+            )
             sys.exit(1)
         prompt = build_character_reference_prompt(remaining_argv[1], remaining_argv[2])
-        draw_character_reference(prompt, remaining_argv[3], provider=provider_arg)
+        draw_character_reference(
+            prompt, normalize_path(remaining_argv[3]), provider=provider_arg
+        )
     elif cmd == "build_prompts":
-        build_prompts_workspace(remaining_argv[1])
+        build_prompts_workspace(normalize_path(remaining_argv[1]))
     elif cmd == "batch_draw":
         if len(remaining_argv) < 2:
-            print("Usage: python3 sticker_utils.py batch_draw <target_directory_path> [--provider gemini|qwen] [--concurrent N] [--delay S]")
+            print(
+                "Usage: python3 sticker_utils.py batch_draw <target_directory_path> [--provider gemini|qwen] [--concurrent N] [--delay S]"
+            )
             sys.exit(1)
         # 解析额外参数
         max_concurrent = 3
@@ -177,26 +226,51 @@ if __name__ == "__main__":
                 max_concurrent = int(remaining_argv[i + 1])
             elif arg == "--delay" and i + 1 < len(remaining_argv):
                 delay_between = float(remaining_argv[i + 1])
-        batch_draw(remaining_argv[1], provider=provider_arg, max_concurrent=max_concurrent, delay_between=delay_between)
+        batch_draw(
+            normalize_path(remaining_argv[1]),
+            provider=provider_arg,
+            max_concurrent=max_concurrent,
+            delay_between=delay_between,
+        )
     elif cmd == "draw":
         if len(remaining_argv) < 3:
-            print("Usage: python3 sticker_utils.py draw <prompt.txt> <output.png> [reference_image] [--provider gemini|qwen]")
+            print(
+                "Usage: python3 sticker_utils.py draw <prompt.txt> <output.png> [reference_image] [--provider gemini|qwen]"
+            )
             sys.exit(1)
-        ref_image = remaining_argv[3] if len(remaining_argv) > 3 else None
-        remote_draw_trigger(remaining_argv[1], remaining_argv[2], ref_image, provider=provider_arg)
+        ref_image = (
+            normalize_path(remaining_argv[3]) if len(remaining_argv) > 3 else None
+        )
+        remote_draw_trigger(
+            normalize_path(remaining_argv[1]),
+            normalize_path(remaining_argv[2]),
+            ref_image,
+            provider=provider_arg,
+        )
     elif cmd == "draw_with_ref":
         if len(remaining_argv) < 4:
-            print("Usage: python3 sticker_utils.py draw_with_ref <prompt.txt> <output.png> <reference_image> [--provider gemini|qwen]")
+            print(
+                "Usage: python3 sticker_utils.py draw_with_ref <prompt.txt> <output.png> <reference_image> [--provider gemini|qwen]"
+            )
             sys.exit(1)
-        remote_draw_trigger(remaining_argv[1], remaining_argv[2], remaining_argv[3], provider=provider_arg)
+        remote_draw_trigger(
+            normalize_path(remaining_argv[1]),
+            normalize_path(remaining_argv[2]),
+            normalize_path(remaining_argv[3]),
+            provider=provider_arg,
+        )
     elif cmd == "process":
-        process_workspace(remaining_argv[1])
+        process_workspace(normalize_path(remaining_argv[1]))
     elif cmd == "wechat_meta":
         if len(remaining_argv) < 2:
-            print("Usage: python3 sticker_utils.py wechat_meta <target_dir|all> [--provider gemini|qwen]")
+            print(
+                "Usage: python3 sticker_utils.py wechat_meta <target_dir|all> [--provider gemini|qwen]"
+            )
             sys.exit(1)
         target = remaining_argv[1]
         if target.lower() == "all":
             process_all_meta(OUTPUT_DIR, provider=provider_arg, skill_dir=SKILL_DIR)
         else:
-            generate_meta(target, provider=provider_arg, skill_dir=SKILL_DIR)
+            generate_meta(
+                normalize_path(target), provider=provider_arg, skill_dir=SKILL_DIR
+            )
