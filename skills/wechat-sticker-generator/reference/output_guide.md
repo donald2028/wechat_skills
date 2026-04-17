@@ -6,10 +6,10 @@
 
 ## output 目录结构
 
-所有生成产物位于用户家目录下的 `~/wechat-sticker-output/` 目录中，按时间戳命名：
+所有生成产物位于用户"我的文档"目录下的 `~/Documents/wechat-sticker-output/` 目录中，按时间戳命名：
 
 ```
-~/wechat-sticker-output/
+~/Documents/wechat-sticker-output/
 └── 20260321_120000_gemini/       ← 时间戳 + 使用的 Provider
     ├── params.json               ← 配置参数
     ├── base_reference.png        ← 角色定妆图
@@ -38,7 +38,7 @@
 
 ```bash
 # 进入输出目录
-cd ~/wechat-sticker-output/20260321_120000_gemini
+cd ~/Documents/wechat-sticker-output/20260321_120000_gemini
 
 # 用 Finder 打开当前目录
 open .
@@ -73,8 +73,8 @@ cat wechat_export/upload_info.txt
 ### Windows
 
 ```bash
-# 进入目录
-cd %USERPROFILE%\wechat-sticker-output\20260321_120000_gemini
+# 进入目录（我的文档）
+cd %USERPROFILE%\Documents\wechat-sticker-output\20260321_120000_gemini
 
 # 用资源管理器打开
 explorer .
@@ -112,7 +112,7 @@ explorer .
 ## 常见问题
 
 **Q：找不到输出目录？**
-A：输出目录位于用户家目录：`~/wechat-sticker-output/`（macOS/Linux）或 `%USERPROFILE%\wechat-sticker-output\`（Windows）
+A：输出目录位于"我的文档"：`~/Documents/wechat-sticker-output/`（macOS/Linux）或 `%USERPROFILE%\Documents\wechat-sticker-output\`（Windows）
 
 **Q：wechat_export 目录不存在？**
 A：需要运行 `python3 sticker_utils.py process $DIR_PATH` 才会生成

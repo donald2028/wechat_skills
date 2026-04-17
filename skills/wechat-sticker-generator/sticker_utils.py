@@ -27,11 +27,11 @@ def normalize_path(path_str):
     return os.path.abspath(path_str)
 
 
-OUTPUT_DIR = normalize_path("~/wechat-sticker-output")
+OUTPUT_DIR = normalize_path("~/Documents/wechat-sticker-output")
 
 
 def create_dir(provider=None):
-    """在 ~/wechat-sticker-output/ 中创建时间戳工作空间"""
+    """在 ~/Documents/wechat-sticker-output/ 中创建时间戳工作空间"""
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     timestamp_dir = datetime.now().strftime("%Y%m%d_%H%M%S")
     if provider:
