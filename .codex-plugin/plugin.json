@@ -1,0 +1,36 @@
+{
+  "name": "wechat-skills",
+  "version": "0.1.0",
+  "description": "WeChat content research, article production, crawling, publishing, and sticker generation skills.",
+  "author": {
+    "name": "donald2028",
+    "url": "https://github.com/donald2028"
+  },
+  "homepage": "https://github.com/donald2028/wechat_skills",
+  "repository": "https://github.com/donald2028/wechat_skills",
+  "license": "MIT",
+  "keywords": [
+    "wechat",
+    "content-creation",
+    "article",
+    "crawler",
+    "sticker"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "WeChat Skills",
+    "shortDescription": "Create and automate WeChat content.",
+    "longDescription": "Research AI topics, write and publish WeChat articles, archive official-account posts, and generate WeChat sticker packs.",
+    "developerName": "donald2028",
+    "category": "Productivity",
+    "capabilities": [
+      "Research",
+      "Write",
+      "Automation",
+      "Image generation"
+    ],
+    "websiteURL": "https://github.com/donald2028/wechat_skills",
+    "brandColor": "#07C160",
+    "defaultPrompt": "Help me research, create, or automate content for WeChat."
+  }
+}

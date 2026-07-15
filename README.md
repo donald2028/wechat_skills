@@ -1,24 +1,40 @@
-# My AI Skills Collection
+# WeChat Skills
 
-A collection of high-quality skills for AI agents (OpenCode, Claude Code, etc.), specializing in WeChat ecosystem automation and creative asset generation.
+A collection of skills for Claude Code, Codex, and other AI agents, specializing in WeChat content workflows and creative asset generation.
 
 ## 🚀 Installation
 
-### Option 1: Using Skills CLI (Recommended)
+### Claude Code plugin
+
+```bash
+claude plugin marketplace add donald2028/wechat_skills
+claude plugin install wechat-skills@wechat-skills
+```
+
+### Codex plugin
+
+```bash
+codex plugin marketplace add donald2028/wechat_skills
+codex plugin add wechat-skills@wechat-skills
+```
+
+When publishing an update, bump the `version` in both plugin manifests.
+
+### Skills CLI
 
 If you have the `skills` CLI installed, you can add this entire collection with one command:
 
 ```bash
-npx skills add sterlingdon/wechat_skills -g
+npx skills add donald2028/wechat_skills -g
 ```
 
-### Option 2: Manual Installation (For OpenCode)
+### Manual installation for OpenCode
 
 To use these skills in your OpenCode environment:
 
 1. **Clone this repository** to your local config directory:
    ```bash
-   git clone https://github.com/sterlingdon/wechat_skills.git ~/.config/opencode/my-skills
+   git clone https://github.com/donald2028/wechat_skills.git ~/.config/opencode/my-skills
    ```
 
 2. **Create a symlink** to make the skills discoverable:
@@ -36,6 +52,7 @@ To use these skills in your OpenCode environment:
 | Skill | Description |
 |-------|-------------|
 | **[ai-inspiration-scout](./skills/ai-inspiration-scout)** | Search the last 1-2 days of AI news, X discussions, top voices, and GitHub trending tools, then save multiple writing-ready topic ideas into the repo-level `content_hub/01-ideas/`. |
+| **[wechat-official-account-manager](./skills/official_accounts)** | Produce, illustrate, format, and sync articles to a WeChat Official Account draft box. |
 | **[wechat-article-crawler](./skills/wechat-article-crawler)** | Crawl WeChat official account articles and export full content (Markdown/HTML) plus local assets (images, videos, audio). |
 | **[wechat-sticker-generator](./skills/wechat-sticker-generator)** | Generate WeChat-compliant sticker sets (GIF/PNG) with consistent characters and automated background removal. |
 

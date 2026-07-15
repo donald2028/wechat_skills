@@ -1,0 +1,20 @@
+{
+  "name": "wechat-skills",
+  "owner": {
+    "name": "donald2028"
+  },
+  "description": "Skills for WeChat content research, production, publishing, crawling, and sticker generation.",
+  "plugins": [
+    {
+      "name": "wechat-skills",
+      "source": "./",
+      "description": "WeChat content research, article production, crawling, publishing, and sticker generation skills.",
+      "category": "productivity",
+      "tags": [
+        "wechat",
+        "content-creation",
+        "automation"
+      ]
+    }
+  ]
+}

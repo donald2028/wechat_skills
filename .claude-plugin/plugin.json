@@ -1,0 +1,21 @@
+{
+  "name": "wechat-skills",
+  "displayName": "WeChat Skills",
+  "version": "0.1.0",
+  "description": "WeChat content research, article production, crawling, publishing, and sticker generation skills.",
+  "author": {
+    "name": "donald2028",
+    "url": "https://github.com/donald2028"
+  },
+  "homepage": "https://github.com/donald2028/wechat_skills",
+  "repository": "https://github.com/donald2028/wechat_skills",
+  "license": "MIT",
+  "keywords": [
+    "wechat",
+    "content-creation",
+    "article",
+    "crawler",
+    "sticker"
+  ],
+  "skills": "./skills/"
+}
